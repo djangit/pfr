@@ -15,7 +15,7 @@ schemes:
 paths:
   /:
     post:
-      operationId: app_withrestapi.upload_file
+      operationId: app.upload_file
       summary: Uploads a file.
       consumes:
        - multipart/form-data
