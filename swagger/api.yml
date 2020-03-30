@@ -9,8 +9,8 @@ info:
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: localhost:8000
-basePath: "/"
+#host: localhost:8000
+#basePath: "/"
 tags:
 - name: "file"
   description: "Converts a file into json and returns its metadata"
@@ -19,7 +19,7 @@ schemes:
 paths:
   /:
     post:
-      operationId: upload_file()
+      operationId: app_demo.upload_file
       summary: Uploads a file.
       consumes:
        - multipart/form-data
@@ -30,7 +30,6 @@ paths:
          description: The file to upload.
          required: true
       produces:
-      - "application/xml"
       - "application/json"
       responses:
         200:
