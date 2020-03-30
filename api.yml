@@ -1,0 +1,34 @@
+swagger: "2.0"
+info:
+  description: "This is the upload file api."
+  version: "1.0.0"
+  title: "Projet fil rouge - API "
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "djan.pirbay@student-cs.fr"
+  license:
+tags:
+- name: "file"
+  description: "Converts a file into json and returns its metadata"
+schemes:
+- "http"
+paths:
+  /:
+    post:
+      operationId: app.upload_file
+      summary: Uploads a file.
+      consumes:
+       - multipart/form-data
+      parameters:
+       - in: formData
+         name: file
+         type: file
+         description: The file to upload.
+         required: true
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "File uploaded"
+        400:
+          description: "bad request"
