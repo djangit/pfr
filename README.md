@@ -3,7 +3,7 @@
 
 How to run : 
 install req.txt 
-python -r req.txt
+sudo pip install -r req.txt
 launch the server : 
 python app_demo.py
 
