@@ -1,3 +1,11 @@
-# Welcome to Microblog!
+# Projet fil rouge 
 
-This is an example application featured in my [Flask Mega-Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world). See the tutorial for instructions on how to work with it.
+
+How to run : 
+install req.txt 
+python -r req.txt
+launch the server : 
+python app_demo.py
+
+go to http://localhost:8000/ui/#!/default/app_demo_upload_file to test the API
+
