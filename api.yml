@@ -6,7 +6,6 @@ info:
   termsOfService: "http://swagger.io/terms/"
   contact:
     email: "djan.pirbay@student-cs.fr"
-  license:
 tags:
 - name: "file"
   description: "Converts a file into json and returns its metadata"

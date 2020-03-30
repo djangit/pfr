@@ -24,7 +24,7 @@ def upload_file():
 
         # check if the post request has the file part
     if 'file' not in request.files:
-        return ('No file part in the request')
+        return ('No file part in the request'), 400
         
     file = request.files['file']
     #request.files.get('file')
@@ -33,7 +33,7 @@ def upload_file():
         # if user does not select file, browser also
         # submit an empty part without filename
     if file.filename == '':
-        return ('No selected file')
+        return ('No selected file'), 400
 
 
     if file and allowed_file(file.filename):
@@ -58,7 +58,7 @@ def upload_file():
             fileMetadata['extension']= fileType.extension
           
     else :
-        return('File not supported : please upload a csv, png or txt file')
+        return('File not supported : please upload a csv, png or txt file'), 400 
         
     return jsonify(fileMetadata), 200
         
@@ -68,5 +68,5 @@ if __name__ == "__main__":
     app = connexion.FlaskApp(__name__, port=9090, specification_dir='')
     app.add_api('api.yml')
     app.secret_key = 'super secret key'
-    app.run(debug=True, port=8000, host="0.0.0.0")
+    app.run(debug=True, port=80, host="0.0.0.0")
    
