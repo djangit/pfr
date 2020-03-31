@@ -7,6 +7,13 @@ info:
   contact:
     email: "djan.pirbay@student-cs.fr"
   license:
+<<<<<<< HEAD
+=======
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+#host: localhost:8000
+#basePath: "/"
+>>>>>>> 8217d782fbed586aabec5873901da1b62227874b
 tags:
 - name: "file"
   description: "Converts a file into json and returns its metadata"
@@ -15,7 +22,11 @@ schemes:
 paths:
   /:
     post:
+<<<<<<< HEAD
       operationId: app.upload_file
+=======
+      operationId: app_demo.upload_file
+>>>>>>> 8217d782fbed586aabec5873901da1b62227874b
       summary: Uploads a file.
       consumes:
        - multipart/form-data
