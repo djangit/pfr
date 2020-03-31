@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 #from mimetypes import MimeTypes
 #from flasgger import Swagger
 import connexion
-
+import csv
 
 UPLOAD_FOLDER = '/home/lpirbay/Documents/pfr'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'csv'}
@@ -20,49 +20,52 @@ def allowed_file(filename):
 
 #@app.route('/', methods=['POST'])
 def upload_file():
-    fileMetadata ={}
-
-        # check if the post request has the file part
+    output={}
+    # check if the post request has the file part
     if 'file' not in request.files:
-        return ('No file part in the request'), 400
-        
+        resp = jsonify({'message' : 'No file part in the request'})
+        return resp, 400
+
     file = request.files['file']
-    #request.files.get('file')
 
-
-        # if user does not select file, browser also
-        # submit an empty part without filename
     if file.filename == '':
-        return ('No selected file'), 400
-
+        resp = jsonify({'message' : 'No file selected for uploading'})
+     
+        return resp, 400
 
     if file and allowed_file(file.filename):
-        content=base64.b64encode(file.read())# il faut encoder le contenu qui n'est pas de type texte pour que ca puisse aller dans un fichier json
-        fileMetadata['name']=file.filename
-        fileMetadata['size']=len(content)
-        fileMetadata['mimetype']=file.content_type
-        #fileMetadata['mimetype']=magic.Magic(mime=True).from_file(file)
-        #fileMetadata['mimetype']=MimeTypes().guess_type(file)
+        file_name= file.filename
+        file_name = file_name.split(".")
 
-        # le contenu va dependre du type de fichier
-        fileType = filetype.guess(file)
-        
-        if fileType is None:
-            #si le type est inconnu on suppose que le fichier est un fichier de type texte (csv,json,xml,txt etc ...)
-            try:
-                fileMetadata['content']=content.decode()
-            except:
-                return 'File format not supported'                
-        else:
-        #Le type de fichier est connu
-            fileMetadata['extension']= fileType.extension
-          
-    else :
-        return('File not supported : please upload a csv, png or txt file'), 400 
-        
-    return jsonify(fileMetadata), 200
-        
+        if 'text' in file.content_type or 'application/octet-stream' in file.content_type:
+            fileMetadata = {}
+            file_tmp = request.files['file'].read()
+            file_tmp = file_tmp.decode("utf8")
+            #metadata_txt['file name']=file_name[0]
+            fileMetadata['name']=file.filename
+            fileMetadata['size']=len(file.read())
+            fileMetadata['type']=file.content_type            
+            output['File Data']= file_tmp
+            output['File MetaData'] = fileMetadata
+            return jsonify(output),200
 
+        elif 'image' in file.content_type: 
+            fileMetadata={}
+            encoded_string = base64.b64encode(file.read())
+            encoded_string = encoded_string.decode('utf-8')
+            fileMetadata['name']=file.filename
+            fileMetadata['size']=len(file.read())
+            fileMetadata['type']=file.content_type  
+            output['File data']=encoded_string
+            output['File Metadata']=fileMetadata
+            return jsonify(output),200
+
+
+    else:
+        resp = jsonify({'File not supported' : 'please upload a csv, png or txt file'})
+        return resp, 400
+
+    
 
 if __name__ == "__main__":
     app = connexion.FlaskApp(__name__, port=9090, specification_dir='')
