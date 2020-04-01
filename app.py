@@ -5,9 +5,12 @@ from werkzeug.utils import secure_filename
 #from flasgger import Swagger
 import connexion
 import csv
+import boto3
 
 UPLOAD_FOLDER = '/home/lpirbay/Documents/pfr'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'csv'}
+s3 = boto3.client('s3')
+bucket = s3.Bucket(bucket-projet-fil-rouge)
 
 #app = Flask(__name__)
 #swagger = Swagger(app)
@@ -20,6 +23,7 @@ def allowed_file(filename):
 
 #@app.route('/', methods=['POST'])
 def upload_file():
+    
     output={}
     # check if the post request has the file part
     if 'file' not in request.files:
@@ -47,6 +51,7 @@ def upload_file():
             fileMetadata['type']=file.content_type            
             output['File Data']= file_tmp
             output['File MetaData'] = fileMetadata
+            s3.upload_file(file, bucket, output['File Data'])
             return jsonify(output),200
 
         elif 'image' in file.content_type: 
