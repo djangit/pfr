@@ -5,12 +5,15 @@ from werkzeug.utils import secure_filename
 #from flasgger import Swagger
 import connexion
 import csv
-import boto3
+import boto3, logging
+from botocore.exceptions import ClientError
+from flask_oauth import OAuth
 
 UPLOAD_FOLDER = '/home/lpirbay/Documents/pfr'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'csv'}
 s3 = boto3.client('s3')
-bucket = s3.Bucket(bucket-projet-fil-rouge)
+#s3 = boto3.resource('s3')
+#bucket = s3.Bucket('bucket-projet-fil-rouge')
 
 #app = Flask(__name__)
 #swagger = Swagger(app)
@@ -51,7 +54,14 @@ def upload_file():
             fileMetadata['type']=file.content_type            
             output['File Data']= file_tmp
             output['File MetaData'] = fileMetadata
-            s3.upload_file(file, bucket, output['File Data'])
+            '''try:
+               response = s3_client.upload_file(file_name, bucket, object_name)
+               response = s3.upload_file(file. 
+            except ClientError as e:
+               logging.error(e)
+               return False
+            return True
+            '''
             return jsonify(output),200
 
         elif 'image' in file.content_type: 
@@ -76,5 +86,4 @@ if __name__ == "__main__":
     app = connexion.FlaskApp(__name__, port=9090, specification_dir='')
     app.add_api('api.yml')
     app.secret_key = 'super secret key'
-    app.run(debug=True, port=80, host="0.0.0.0")
-   
+    app.run(debug=True, port=80, host="0.0.0.0", ssl_context='adhoc')
