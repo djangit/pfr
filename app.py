@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 import connexion
 import csv
 import boto3, logging
-from botocore.exceptions import ClientError
+from io import BytesIO
 
 UPLOAD_FOLDER = '/home/lpirbay/Documents/pfr'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'csv'}
@@ -52,9 +52,7 @@ def upload_file():
             fileMetadata['type']=file.content_type            
             output['File Data']= file_tmp
             output['File MetaData'] = fileMetadata
-            #s3.Bucket(bucket).upload_file(jsonify(output),object_name)
-            s3.upload_fileobj(file, bucket,'ecole.csv')
-
+            s3.upload_fileobj(BytesIO(json.dumps(output).encode('utf-8')),bucket, object_name+'.json')
             '''try:
                response = s3_client.upload_file(file_name, bucket, object_name)
                response = s3.upload_file(file. 
@@ -74,6 +72,9 @@ def upload_file():
             fileMetadata['type']=file.content_type  
             output['File data']=encoded_string
             output['File Metadata']=fileMetadata
+            object_name=file_name[0]
+            s3.upload_fileobj(BytesIO(json.dumps(output).encode('utf-8')),bucket, object_name+'.json')
+
             return jsonify(output),200
 
 
