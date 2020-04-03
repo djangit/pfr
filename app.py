@@ -7,15 +7,12 @@ import connexion
 import csv
 import boto3, logging
 from botocore.exceptions import ClientError
-#from flask_oauth import OAuth
 
 UPLOAD_FOLDER = '/home/lpirbay/Documents/pfr'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'csv'}
 s3 = boto3.client('s3')
 #s3 = boto3.resource('s3')
 bucket = 'bucket-projet-fil-rouge'
-
-#app = Flask(__name__)
 #swagger = Swagger(app)
 
 #app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
