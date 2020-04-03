@@ -5,12 +5,15 @@ from werkzeug.utils import secure_filename
 #from flasgger import Swagger
 import connexion
 import csv
-import boto3
+import boto3, logging
+from botocore.exceptions import ClientError
+#from flask_oauth import OAuth
 
 UPLOAD_FOLDER = '/home/lpirbay/Documents/pfr'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'csv'}
 s3 = boto3.client('s3')
-bucket = s3.Bucket(bucket-projet-fil-rouge)
+#s3 = boto3.resource('s3')
+bucket = 'bucket-projet-fil-rouge'
 
 #app = Flask(__name__)
 #swagger = Swagger(app)
@@ -45,13 +48,24 @@ def upload_file():
             fileMetadata = {}
             file_tmp = request.files['file'].read()
             file_tmp = file_tmp.decode("utf8")
-            #metadata_txt['file name']=file_name[0]
             fileMetadata['name']=file.filename
-            fileMetadata['size']=len(file.read())
+            fileMetadata['object name']=file_name[0]
+            object_name=file_name[0]
+            fileMetadata['size']=len(file_tmp)
             fileMetadata['type']=file.content_type            
             output['File Data']= file_tmp
             output['File MetaData'] = fileMetadata
-            s3.upload_file(file, bucket, output['File Data'])
+            #s3.Bucket(bucket).upload_file(jsonify(output),object_name)
+            s3.upload_fileobj(file, bucket,'ecole.csv')
+
+            '''try:
+               response = s3_client.upload_file(file_name, bucket, object_name)
+               response = s3.upload_file(file. 
+            except ClientError as e:
+               logging.error(e)
+               return False
+            return True
+            '''
             return jsonify(output),200
 
         elif 'image' in file.content_type: 
@@ -59,7 +73,7 @@ def upload_file():
             encoded_string = base64.b64encode(file.read())
             encoded_string = encoded_string.decode('utf-8')
             fileMetadata['name']=file.filename
-            fileMetadata['size']=len(file.read())
+            fileMetadata['size']=len(encoded_string)
             fileMetadata['type']=file.content_type  
             output['File data']=encoded_string
             output['File Metadata']=fileMetadata
@@ -67,14 +81,16 @@ def upload_file():
 
 
     else:
-        resp = jsonify({'File not supported' : 'please upload a csv, png or txt file'})
-        return resp, 400
+        #resp = jsonify({'File not supported' : 'please upload a csv, png or txt file'})
+        return ('File not supported : please upload a csv, png or txt file'), 400
+        #return resp 
 
     
 
 if __name__ == "__main__":
-    app = connexion.FlaskApp(__name__, port=9090, specification_dir='')
+    #app = connexion.FlaskApp(__name__, specification_dir='swagger/')
+    app = connexion.App(__name__, specification_dir='swagger/')
     app.add_api('api.yml')
     app.secret_key = 'super secret key'
-    app.run(debug=True, port=80, host="0.0.0.0")
-   
+    #app.run(debug=True, host="0.0.0.0", ssl_context='adhoc')
+    app.run(debug=True, host="0.0.0.0")
